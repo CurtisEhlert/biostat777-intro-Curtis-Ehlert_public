@@ -1,0 +1,65 @@
+[
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Homepage",
+    "section": "",
+    "text": "Hi! My name is Curtis Ehlert, and I’m a second-year PhD student in the MMI program studying microgravity effects on the pathogenic yeast C. neoformans in the Casadevall Lab. I enjoy playing the piano and guitar, and have recently started practicing the harmonica.\n\n\n\n\nHarmonica and piano, ergo Bob Dylan fan"
+  },
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About",
+    "section": "",
+    "text": "Curtis was born and raised in Ontario, Canada, and attended McGill University in Montreal, earning a Bachelor of Engineering in bioengineering in 2024. While there, he studied trypanosome protein structure-function at the McGill Institute of Parasitology and worked as a tissue engineering and pharmaceutical biologics researcher. Curious about astromycology and its applications, Curtis joined the lab in 2025 and is currently studying the effects of microgravity on C. neoformans physiology. In addition to his research, Curtis is interested in the applications of metaphysics and epistemology to scientific practice, in music composition, and in non-profit work in advancing biomedical engineering education and opportunities."
+  },
+  {
+    "objectID": "Example Analysis.html#introduction",
+    "href": "Example Analysis.html#introduction",
+    "title": "Example Analysis",
+    "section": "Introduction",
+    "text": "Introduction\nUsing our data, we will examine how music output from the Beatles varied over their seven-year long career. We will ask what how many albums per year were put out, how many songs were included in each album, and will find the average duration of their songs over each year they were released. In doing so, we may evaluate their diligence by assessing music output over time.\nThis data analysis is meant for Beatles enthusiasts, lay Beatles fans, or just those who are Beatles-curious.\nData originated from ’The Beatles Spotify Song Data’, Uploaded by Chad Wambles on Kaggle.\n\nOriginal data set source (Wambles 2024): https://www.kaggle.com/datasets/chadwambles/allbeatlesspotifysongdata2009remaster/data\nMetadata file attached here: Download data_dictionary"
+  },
+  {
+    "objectID": "Example Analysis.html#data-import-and-wrangling",
+    "href": "Example Analysis.html#data-import-and-wrangling",
+    "title": "Example Analysis",
+    "section": "Data Import and wrangling",
+    "text": "Data Import and wrangling\n\nknitr::opts_chunk$set(message = FALSE, warning = FALSE)\n\nlibrary(tidyverse)\nlibrary(ggplot2)\nlibrary(plotly)\nlibrary(knitr)\nlibrary(here)\n  \n# Load and prepare the data\nSummaryData &lt;- read_csv(\"TheBeatlesCleaned.csv\", show_col_types = FALSE)\n\n# Data wrangling using dplyr and tidyr functions\nprocessed_data &lt;- SummaryData %&gt;%\n  mutate(duration_minutes = duration_ms / 60000) %&gt;% \n  #defining minutes instead\n  #mutate creates new columns\n  #mutate is dplyr\n  group_by(year, album) %&gt;%\n  #group_by is a dplyr function\n  summarise(\n    avg_song_duration_ms = mean(duration_ms, na.rm = TRUE),\n    songs_per_album = n(),\n    .groups = 'drop'\n  ) %&gt;%\n  arrange(year) %&gt;%\n  mutate(album_ordered = fct_inorder(album))\n\nyearly_summary &lt;- SummaryData %&gt;%\n  group_by(year) %&gt;%\n  summarise(\n    avg_duration_per_year = mean(duration_ms, na.rm = TRUE),\n    albums_per_year = n_distinct(album),\n    total_songs_per_year = n(),\n    .groups = 'drop'\n  ) %&gt;%\n  filter(!is.na(year))"
+  },
+  {
+    "objectID": "Example Analysis.html#average-song-duration-over-the-years-over-the-years",
+    "href": "Example Analysis.html#average-song-duration-over-the-years-over-the-years",
+    "title": "Example Analysis",
+    "section": "Average song duration over the years over the years",
+    "text": "Average song duration over the years over the years\n\n# Plot 1: Average song duration over years (using geom_line() and geom_point())\np1 &lt;- ggplot(yearly_summary, aes(x = year, y = avg_duration_per_year / 60000)) +\n  geom_line(color = \"#1f77b4\", size = 1.2) +\n  geom_point(color = \"#ff7f0e\", size = 3, alpha = 0.8) +\n  labs(\n    title = \"The Beatles: Average Song Duration over the years\",\n    subtitle = \"How song lengths changed throughout their career (1963-1970)\",\n    x = \"Release Year\",\n    y = \"Average Song Duration (Minutes)\",\n    caption = \"Peak towards the latter half of the Beatles discography\"\n  ) +\n  theme_minimal() +\n  theme(\n    plot.title = element_text(face = \"bold\", size = 14, hjust = 0.5),\n    plot.subtitle = element_text(hjust = 0.5),\n    axis.title = element_text(face = \"bold\")\n  )\n\nggplotly(p1)\n\n\n\n\n\nFig. 1 Shows average song duration over release years. Observable peak towards the latter half of the Beatles discography.\n\n\n\n\n\n\nNoteObservation\n\n\n\nThe average song duration increased yearly for the first 5 years of The Beatles’ discography"
+  },
+  {
+    "objectID": "Example Analysis.html#albums-produced-by-year",
+    "href": "Example Analysis.html#albums-produced-by-year",
+    "title": "Example Analysis",
+    "section": "Albums Produced by Year",
+    "text": "Albums Produced by Year\n\np2 &lt;- ggplot(yearly_summary, aes(x = factor(year), y = albums_per_year)) +\n  geom_col(fill = \"#2ca02c\", alpha = 0.8) +\n  labs(\n    title = \"The Beatles: Albums Produced every Year\",\n    subtitle = \"Number of albums released each year\",\n    x = \"Year\",\n    y = \"Number of Albums Released\",\n    caption = \"Consistent output over time\"\n  ) +\n  theme_minimal() +\n  theme(\n    axis.text.x = element_text(angle = 45, hjust = 1),\n    plot.title = element_text(face = \"bold\", hjust = 0.5)\n  )\n\nggplotly(p2)\n\n\n\n\n\nFig. 2 Album production per year shows consistent output over time"
+  },
+  {
+    "objectID": "Example Analysis.html#number-of-songs-produced-on-each-album",
+    "href": "Example Analysis.html#number-of-songs-produced-on-each-album",
+    "title": "Example Analysis",
+    "section": "Number of songs produced on each album",
+    "text": "Number of songs produced on each album\n\nalbum_songs_data &lt;- SummaryData |&gt;\n  group_by(year, album) |&gt;\n  summarise(songs_count = n(), .groups = 'drop') |&gt;\n  mutate(\n    era = case_when(\n      album %in% c(\"Please Please Me\", \"With The Beatles\", \"A Hard Day's Night\", \n                   \"Beatles for Sale\", \"Help!\") ~ \"Beatlemania\",\n      album %in% c(\"Rubber Soul\", \"Revolver\", \"Sgt. Pepper's Lonely Hearts Club Band\", \"Magical Mystery Tour\") ~ \"Psychedelia\",\n      TRUE ~ \"Late Rock\"\n    ),\n    album_ordered = fct_reorder(album, year)\n  ) |&gt;\n  mutate(era = factor(era, levels = c(\"Beatlemania\", \"Psychedelia\", \"Late Rock\")))\n\np3 &lt;- ggplot(album_songs_data, aes(x = album_ordered, y = songs_count)) +\n  geom_bar(stat = \"identity\", fill = \"#6A0DAD\", alpha = 0.8, width = 0.7) +\n  facet_grid(~era, scales = \"free_x\", space = \"free_x\") +\n  labs(\n    title = \"The Beatles: Number of Songs Per Album by Musical Era\",\n    subtitle = \"Track counts faceted by three distinct creative periods\",\n    x = \"Album\",\n    y = \"Number of Songs\",\n    caption = \"The Beatles' output can be defined in three broad eras: Beatlemania (early pop), Psychedelia (experimental), Late Rock (mature)\"\n  ) +\n  theme_minimal() +\n  theme(\n    axis.text.x = element_text(angle = 45, hjust = 1, size = 9),\n    axis.title.x = element_text(face = \"bold\", margin = margin(t = 60)),\n    plot.title = element_text(face = \"bold\", hjust = 0.5, size = 14),\n    plot.subtitle = element_text(hjust = 0.5),\n    axis.title = element_text(face = \"bold\"),\n    strip.text = element_text(face = \"bold\", size = 10),\n    panel.spacing = unit(1, \"lines\"), \n    plot.margin = margin(t = 10, r = 10, b = 60, l = 10)\n  ) +\n  geom_text(aes(label = songs_count), vjust = -0.5, size = 3.5, fontface = \"bold\") +\n\n  scale_y_continuous(expand = expansion(mult = c(0, 0.1)))\n\nggplotly(p3)\n\n\n\n\n\nFig. 3 Plot showing The Beatles’ output defined into three broad eras: Beatlemania (early pop), Psychedelia (experimental), Late Rock (mature)\n\n\n\n\n\n\nTipFun fact\n\n\n\nThe Beatles recorded 30 songs for ‘The Beatles’ (AKA the White Album), almost double to any other album. The average duration of recorded songs from the year it was released is the highest in The Beatles’ discography.\n\n\n\n\n\n\n\nWhite Album, containing two records."
+  },
+  {
+    "objectID": "Example Analysis.html#summary",
+    "href": "Example Analysis.html#summary",
+    "title": "Example Analysis",
+    "section": "Summary",
+    "text": "Summary\nThe Beatles, despite all of their accolades, were only a commercial band for seven years, between 1963 and 1970 (Barlow 2025). By tracking simple statistics around song and album release details and song duration, we begin to paint a picture of a dynamic, persistent group, never faltering in their output. We can observe from figure 1 that average song duration nearly doubles in 1967 from 1966, and falls steadily thereafter. Figure 2 shows their consistent output, continuously releasing 1-2 albums every year. While figure 3 shows number of songs released per album was steady, we see a massive spike for the White Album, with the year it was released (1967) also featuring the longest duration songs on average (Barry 2018)."
+  },
+  {
+    "objectID": "Example Analysis.html#functions-used",
+    "href": "Example Analysis.html#functions-used",
+    "title": "Example Analysis",
+    "section": "Functions used",
+    "text": "Functions used\ndplyr functions used:\n\nmutate()\ngroup_by()\nsummarise()\narrange()\nfilter()\n\ngeom_* functions used:\n\ngeom_line()\ngeom_point()\ngeom_col()\ngeom_bar()\ngeom_text()"
+  }
+]

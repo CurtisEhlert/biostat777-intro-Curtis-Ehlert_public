@@ -1,0 +1,17 @@
+---
+title: "Example Analysis"
+format: html
+---
+
+```         
+```
+
+## Introduction
+
+Using our data, we will examine how music output from the Beatles varied over their seven-year long career. We will ask what how many albums per year were put out, how many songs were included in each album, and will find the average duration of their songs over each year they were released. In doing so, we may evaluate their diligence by assessing music output over time.
+
+This data analysis is meant for Beatles enthusiasts, lay Beatles fans, or just those who are Beatles-curious.
+
+Data originated from '**The Beatles Spotify Song Data'**, Uploaded by Chad Wambles on Kaggle.
+
+-   \[Original dataset source\](<https://www.kaggle.com/datasets/chadwambles/allbeatlesspotifysongdata2009remaster/data>)

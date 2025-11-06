@@ -1,0 +1,14 @@
+---
+title: "Homepage"
+format: html
+editor: visual
+---
+
+Hi! My name is Curtis Ehlert, and I'm a second-year PhD student in the MMI program studying microgravity effects on the pathogenic yeast *C. neoformans* in the Casadevall Lab. I enjoy playing the piano and guitar, and have recently started practicing the harmonica.
+
+::: cell
+![Harmonica and piano, ergo Bob Dylan fan](images/Bob_Dylan_Project_1.png){fig-alt="Harmonica and piano, ergo Bob Dylan fan" fig-align="left" width="400"}
+:::
+
+```{r}
+```
